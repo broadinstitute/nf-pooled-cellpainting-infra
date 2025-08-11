@@ -116,14 +116,27 @@ class InfrastructureStack(Stack):
             ],
         }
 
-        # Create IAM role for Seqera
-        self.seqera_role = iam.Role(
+        # Create IAM user for Seqera programmatic access
+        self.seqera_user = iam.User(
             self,
-            "SeqeraRole",
-            assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
-            inline_policies={"SeqeraForgePolicy": iam.PolicyDocument.from_json(forge_policy)},
-            role_name=f"SeqeraRole-{self.stack_name}",
+            "SeqeraUser",
+            user_name=f"seqera-user-{self.stack_name}",
         )
+
+        # Create managed policies (no size limit)
+        forge_managed_policy = iam.ManagedPolicy(
+            self,
+            "SeqeraForgeManagedPolicy",
+            document=iam.PolicyDocument.from_json(forge_policy),
+            managed_policy_name=f"SeqeraForgePolicy-{self.stack_name}",
+            description="Seqera Forge and Launch permissions for AWS Batch compute environments",
+        )
+
+        # Attach managed policy to user
+        self.seqera_user.add_managed_policy(forge_managed_policy)
+
+        # Create access key for the user
+        self.access_key = iam.AccessKey(self, "SeqeraAccessKey", user=self.seqera_user)
 
         # Create S3 bucket for Nextflow work directory
         self.bucket = s3.Bucket(
@@ -141,10 +154,16 @@ class InfrastructureStack(Stack):
             ],
         )
 
-        # Add S3 bucket access permissions to role
-        self.bucket.grant_read_write(self.seqera_role)
+        # Add S3 bucket access permissions to user (already covered by s3:* in policy)
 
         # Outputs
-        CfnOutput(self, "SeqeraRoleArn", value=self.seqera_role.role_arn)
+        CfnOutput(self, "SeqeraUserName", value=self.seqera_user.user_name)
+        CfnOutput(self, "SeqeraAccessKeyId", value=self.access_key.access_key_id)
+        CfnOutput(
+            self,
+            "SeqeraSecretAccessKey",
+            value=self.access_key.secret_access_key.unsafe_unwrap(),
+            description="Store this securely - it will not be shown again",
+        )
         CfnOutput(self, "SeqeraBucketName", value=self.bucket.bucket_name)
         CfnOutput(self, "SeqeraBucketArn", value=self.bucket.bucket_arn)

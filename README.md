@@ -27,9 +27,10 @@ uv run cdk deploy --profile your-profile-name --context bucketName=your-custom-b
 
 ## Resources Created
 
-- IAM role with Seqera Forge permissions
+- IAM user with Seqera Forge and Launch permissions
+- Access keys for Seqera Platform authentication
 - S3 bucket with lifecycle rules
-- Outputs: Role ARN and bucket details
+- Outputs: User credentials and bucket details
 
 ## Reference
 
