@@ -15,11 +15,14 @@ npm install -g aws-cdk@latest
 ## Deploy
 
 ```bash
+# Bootstrap CDK (one-time setup)
+uv run cdk bootstrap --profile your-profile-name
+
 # Deploy with defaults (nf-pooled-cellpainting-sandbox bucket)
-uv run cdk deploy
+uv run cdk deploy --profile your-profile-name
 
 # Or customize bucket name
-uv run cdk deploy --context bucketName=your-custom-bucket-name
+uv run cdk deploy --profile your-profile-name --context bucketName=your-custom-bucket-name
 ```
 
 ## Resources Created
