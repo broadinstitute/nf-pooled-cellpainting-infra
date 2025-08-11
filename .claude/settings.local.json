@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.seqera.io)",
+      "Bash(gh api:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(uv sync:*)",
+      "Bash(uv run:*)",
+      "Bash(uv add:*)",
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(cdk init:*)",
+      "Bash(mv:*)"
+    ],
+    "deny": []
+  }
+}

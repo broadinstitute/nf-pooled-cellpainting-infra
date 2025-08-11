@@ -1,0 +1,25 @@
+[project]
+name = "nf-pooled-cellpainting-infra"
+version = "0.1.0"
+description = "AWS CDK infrastructure for Seqera Platform"
+requires-python = ">=3.8"
+dependencies = [
+    "aws-cdk-lib>=2.100.0",
+    "constructs>=10.0.0",
+]
+
+[tool.ruff]
+line-length = 120
+src = ["jump_production"]
+target-version = "py312"
+include = ["pyproject.toml", "jump_production/**/*.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "W"]
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
