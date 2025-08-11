@@ -32,6 +32,11 @@ uv run cdk deploy --profile your-profile-name --context bucketName=your-custom-b
 - S3 bucket with lifecycle rules
 - Outputs: User credentials and bucket details
 
+## Related Repositories
+
+- [nf-pooled-cellpainting-assets](https://github.com/broadinstitute/nf-pooled-cellpainting-assets) - Supporting assets and test data
+- [nf-pooled-cellpainting](https://github.com/nf-core/nf-pooled-cellpainting) - Main nf-core pipeline
+
 ## Reference
 
 Based on [Seqera AWS Batch](https://docs.seqera.io/platform-cloud/compute-envs/aws-batch#batch-forge) and [nf-tower-aws policies](https://github.com/seqeralabs/nf-tower-aws).
