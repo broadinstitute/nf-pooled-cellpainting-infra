@@ -10,9 +10,6 @@ dependencies = [
 
 [tool.ruff]
 line-length = 120
-src = ["jump_production"]
-target-version = "py312"
-include = ["pyproject.toml", "jump_production/**/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "W"]
