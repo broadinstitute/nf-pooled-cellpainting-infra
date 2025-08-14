@@ -35,7 +35,7 @@ uv run cdk deploy --profile your-profile-name --context bucketName=your-custom-b
 ## Related Repositories
 
 - [nf-pooled-cellpainting-assets](https://github.com/broadinstitute/nf-pooled-cellpainting-assets) - Supporting assets and test data
-- [nf-pooled-cellpainting](https://github.com/nf-core/nf-pooled-cellpainting) - Main nf-core pipeline
+- [nf-pooled-cellpainting](https://github.com/seqera-services/nf-pooled-cellpainting) - Main nf-core pipeline
 
 ## Reference
 
