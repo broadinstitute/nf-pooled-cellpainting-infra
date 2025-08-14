@@ -1,58 +1,38 @@
-# Infrastructure CDK Project
+# CLAUDE.md
 
-This repository contains AWS CDK infrastructure for Nextflow pipeline compute environments, specifically designed for pooled cell painting workflows.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Architecture Approach
+## Project Overview
 
-### Minimal CDK Structure
-- **Manual setup over `cdk init`**: Created lean structure without unnecessary boilerplate (tests, complex directory structure)
-- **Modern Python tooling**: Uses `uv` + `pyproject.toml` instead of traditional `pip` + `requirements.txt`
-- **Single stack pattern**: Everything in one `InfrastructureStack` for simplicity
+This is an AWS CDK infrastructure project for Seqera Platform (formerly Nextflow Tower) compute environments. See README.md for basic setup and deployment instructions.
 
-### Key Components
-- **IAM Role**: Contains Seqera Forge policy with comprehensive AWS Batch, EC2, EFS, S3 permissions
-- **S3 Bucket**: Nextflow work directory with lifecycle rules (30-day retention, 7-day multipart cleanup)
-- **Configurable naming**: Context variables for bucket/stack names with sensible defaults
+## Architecture
 
-### Design Decisions
-1. **Generic naming**: `InfrastructureStack` instead of `SeqeraStack` for future flexibility
-2. **Embedded policies**: Seqera Forge policy directly in code rather than external files
-3. **Lifecycle management**: Auto-delete objects and bucket for easy cleanup
-4. **Minimal dependencies**: Only `aws-cdk-lib` and `constructs`
+- `app.py`: CDK application entry point that creates the infrastructure stack with configurable context parameters (`bucketName`, `stackName`)
+- `infrastructure_stack.py`: Main stack containing all AWS resources with Seqera-specific IAM policies
+- Uses managed policies instead of inline policies to avoid IAM size limits (this was changed to fix deployment issues)
+- IAM policies are based on official nf-tower-aws policies from Seqera Labs with comprehensive Forge and Launch permissions
 
-## File Structure
+## Development Commands
+
+```bash
+# Linting and formatting (uses ruff configuration from pyproject.toml)
+ruff format .
+ruff check .
+
+# CDK synthesis for validation
+uv run cdk synth --profile your-profile-name
+
+# Deploy with custom stack name context
+uv run cdk deploy --profile your-profile-name --context stackName=YourCustomStackName
+
+# Destroy infrastructure
+uv run cdk destroy --profile your-profile-name
 ```
-├── app.py                    # CDK app entry point
-├── infrastructure_stack.py   # Main stack with IAM + S3 resources
-├── pyproject.toml           # Dependencies and project config
-├── cdk.json                 # CDK configuration with uv integration
-└── README.md                # User-facing documentation
-```
 
-## Key Patterns Used
+## Key Implementation Details
 
-### Policy Integration
-- Seqera Forge policy JSON embedded directly in stack code
-- S3 bucket permissions granted via CDK `grant_read_write()` method
-- Role naming includes stack name for uniqueness
-
-### Resource Configuration
-- S3 bucket with `DESTROY` removal policy for development environments
-- Lifecycle rules for cost optimization
-- CloudFormation outputs for role ARN and bucket details
-
-### Modern Python Tooling
-- `uv` for dependency management and execution
-- `pyproject.toml` for project configuration
-- CDK CLI installed globally via npm, project dependencies via uv
-
-## Context Variables
-- `bucketName`: Override default bucket name
-- `stackName`: Override default stack name
-
-## Future Extensions
-This foundation can be extended with:
-- VPC and networking resources
-- Additional compute environments (ECS, Lambda)
-- Monitoring and logging infrastructure
-- Multi-environment configurations
+- The stack creates IAM users with managed policies containing both Seqera Forge and Launch permissions in a single policy document
+- S3 bucket includes lifecycle rules: 7-day multipart upload cleanup and 30-day object expiration
+- CDK outputs provide all credentials and ARNs needed for Seqera Platform configuration
+- Stack name and bucket name are configurable via CDK context parameters

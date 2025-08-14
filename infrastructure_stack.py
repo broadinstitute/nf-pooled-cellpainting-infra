@@ -146,12 +146,28 @@ class InfrastructureStack(Stack):
             versioned=False,
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
+            public_read_access=True,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=False,
+                block_public_policy=False,
+                ignore_public_acls=False,
+                restrict_public_buckets=False,
+            ),
             lifecycle_rules=[
                 s3.LifecycleRule(
                     id="DeleteIncompleteMultipartUploads", abort_incomplete_multipart_upload_after=Duration.days(7)
                 ),
                 s3.LifecycleRule(id="DeleteOldObjects", expiration=Duration.days(30), enabled=True),
             ],
+        )
+
+        # Add bucket policy to allow public listing of bucket contents
+        self.bucket.add_to_resource_policy(
+            iam.PolicyStatement(
+                actions=["s3:ListBucket"],
+                resources=[self.bucket.bucket_arn],
+                principals=[iam.AnyPrincipal()],
+            )
         )
 
         # Add S3 bucket access permissions to user (already covered by s3:* in policy)
