@@ -39,4 +39,8 @@ uv run cdk deploy --profile your-profile-name --context bucketName=your-custom-b
 
 ## Reference
 
-Based on [Seqera AWS Batch](https://docs.seqera.io/platform-cloud/compute-envs/aws-batch#batch-forge) and [nf-tower-aws policies](https://github.com/seqeralabs/nf-tower-aws).
+Based on [Seqera Platform AWS Cloud Documentation](https://docs.seqera.io/platform-enterprise/compute-envs/aws-cloud#required-permissions). Note: The GitHub [nf-tower-aws policies](https://github.com/seqeralabs/nf-tower-aws) are outdated and missing critical EC2 permissions.
+
+## Future Improvements
+
+- **IAM Policy Structure**: Current implementation combines all permissions into a single policy. Consider restructuring into separate Forge, Launch, and EC2 management policies to follow least-privilege principles and match Seqera's documentation organization.
