@@ -147,7 +147,7 @@ class InfrastructureStack(Stack):
             self,
             "SeqeraBucket",
             bucket_name=bucket_name,
-            versioned=False,
+            versioned=True,
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
             public_read_access=True,
@@ -161,7 +161,11 @@ class InfrastructureStack(Stack):
                 s3.LifecycleRule(
                     id="DeleteIncompleteMultipartUploads", abort_incomplete_multipart_upload_after=Duration.days(7)
                 ),
-                s3.LifecycleRule(id="DeleteOldObjects", expiration=Duration.days(30), enabled=True),
+                s3.LifecycleRule(
+                    id="DeleteOldVersions",
+                    noncurrent_version_expiration=Duration.days(60),
+                    enabled=True,
+                ),
             ],
         )
 
